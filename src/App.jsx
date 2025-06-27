@@ -28,19 +28,46 @@ function App() {
     e.preventDefault();
     if (!nombre || !asignatura || !promedio) return;
 
-    const nuevaEvaluacion = {
-      nombre,
-      asignatura,
-      promedio: parseFloat(promedio),
-    };
+    const nuevaNota = parseFloat(promedio);
 
-    if (editIndex !== null) {
+    // Buscar si ya existe una evaluación con el mismo nombre y asignatura
+    const indexExistente = evaluaciones.findIndex(
+      (ev) =>
+        ev.nombre.trim().toLowerCase() === nombre.trim().toLowerCase() &&
+        ev.asignatura.trim().toLowerCase() === asignatura.trim().toLowerCase()
+    );
+
+    if (indexExistente !== -1 && editIndex === null) {
+      // Si existe, calcular el nuevo promedio
+      const evalExistente = evaluaciones[indexExistente];
+      const nuevoPromedio = ((evalExistente.promedio + nuevaNota) / 2).toFixed(2);
+
       const copia = [...evaluaciones];
-      copia[editIndex] = nuevaEvaluacion;
+      copia[indexExistente] = {
+        ...evalExistente,
+        promedio: parseFloat(nuevoPromedio),
+      };
+      setEvaluaciones(copia);
+    } else if (editIndex !== null) {
+      // Si está editando, actualizar normalmente
+      const copia = [...evaluaciones];
+      copia[editIndex] = {
+        nombre,
+        asignatura,
+        promedio: nuevaNota,
+      };
       setEvaluaciones(copia);
       setEditIndex(null);
     } else {
-      setEvaluaciones([...evaluaciones, nuevaEvaluacion]);
+      // Si no existe, agregar normalmente
+      setEvaluaciones([
+        ...evaluaciones,
+        {
+          nombre,
+          asignatura,
+          promedio: nuevaNota,
+        },
+      ]);
     }
 
     setNombre("");
@@ -157,7 +184,6 @@ function App() {
         )}
       </section>
 
-      {/* Estilos profesionales y responsivos */}
       <style>{`
         html, body, #root {
           height: 100%;
@@ -172,14 +198,14 @@ function App() {
           min-height: 100vh;
           min-width: 100vw;
           width: 100vw;
-          height: 100vh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           background: #f9fafb;
           font-family: 'Segoe UI', Arial, sans-serif;
           box-sizing: border-box;
+          overflow-y: auto;
         }
         .titulo {
           text-align: center;
