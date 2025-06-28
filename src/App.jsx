@@ -154,7 +154,7 @@ function App() {
                 <p className="dato"><strong>Alumno:</strong> {eval_.nombre}</p>
                 <p className="dato"><strong>Asignatura:</strong> {eval_.asignatura}</p>
                 <p className="dato">
-                  <strong>Promedio:</strong> {eval_.promedio}
+                  <strong>Promedio:</strong> {eval_.promedio.toFixed(1)}
                 </p>
                 <span
                   className={`apreciacion etiqueta-${apreciacion.replace(/\s/g, '').toLowerCase()}`}
